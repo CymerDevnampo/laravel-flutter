@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forumapp/controller/authentication.dart';
 import 'package:forumapp/views/login_page.dart';
 import 'package:get/get.dart';
 import './widgets/input_widget.dart';
@@ -16,6 +17,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameCotroller = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthenticationController _authenticationController =
+      Get.put(AuthenticationController());
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +82,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     vertical: 15,
                   ),
                 ),
-                onPressed: () {},
-                child: Text('Register',
-                    style: GoogleFonts.poppins(
-                      fontSize: size * 0.040,
-                      color: Colors.white,
-                    )),
+                onPressed: () async {
+                  await _authenticationController.register(
+                    name: _nameController.text.trim(),
+                    username: _usernameCotroller.text.trim(),
+                    email: _emailController.text.trim(),
+                    password: _passwordController.text.trim(),
+                  );
+                },
+                child: Obx(() {
+                  return _authenticationController.isLoading.value
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text('Register',
+                          style: GoogleFonts.poppins(
+                            fontSize: size * 0.040,
+                            color: Colors.white,
+                          ));
+                }),
               ),
               const SizedBox(
                 height: 20,
